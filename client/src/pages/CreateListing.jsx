@@ -31,6 +31,24 @@ export default function CreateListing() {
             id="address"
             required
           ></input>
+          <input
+            type="text"
+            placeholder="Phone Number"
+            className="border p-3 rounded-lg"
+            id="phoneNumber"
+            minLength="11"
+            maxLength="11"
+            required
+          ></input>
+          <input
+            type="text"
+            placeholder="Whatsapp Number"
+            className="border p-3 rounded-lg"
+            id="whatsappNumber"
+            minLength="11"
+            maxLength="11"
+            required
+          ></input>
           <div className="flex gap-6 flex-wrap">
             <div className="flex gap-2">
               <input type="checkbox" id="sale" className="w-5"></input>
