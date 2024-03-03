@@ -148,7 +148,6 @@ export default function Profile() {
       }
       setUserListings((prev) => prev.filter((listing) => listing._id !== listingId))
     }catch(error){
-
     }
   }
   return (
