@@ -4,6 +4,7 @@ import {Swiper ,  SwiperSlide} from 'swiper/react';
 import SwiperCore from 'swiper';
 import {Navigation} from 'swiper/modules';
 import 'swiper/css/bundle';
+import { useSelector } from 'react-redux';
 import {
     FaBath,
     FaBed,
@@ -15,11 +16,13 @@ import {
   } from 'react-icons/fa';
   import { IoLogoWhatsapp } from "react-icons/io";
   import { FaPhoneVolume } from "react-icons/fa6";
+import Contact from '../components/Contact';
 
 export default function Listing() {
     SwiperCore.use([Navigation]);
-
+    const {currentUser} = useSelector((state) => state.user);
     const params = useParams();
+    const [contact, setContact] = useState(false); 
     const [listing,setListing] = useState(null);
     const [loading,setLoading] = useState(false);
     const [error,setError] = useState(false);
@@ -141,6 +144,12 @@ export default function Listing() {
                 {listing.furnished ? 'Furnished' : 'Unfurnished'}
               </li>
             </ul>
+            {currentUser && listing.userRef !== currentUser._id && !contact && (
+              <button onClick={()=>setContact(true)} className='bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3'>
+                Contact Owner
+              </button>
+            )}
+            {contact && <Contact listing={listing}/>}
           </div>
                 </div>
                 
