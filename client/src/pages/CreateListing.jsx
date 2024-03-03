@@ -20,6 +20,8 @@ export default function CreateListing() {
     address: "",
     type: "rent",
     bedrooms: 1,
+    phoneNumber:"",
+    whatsappNumbers:"",
     bathrooms: 1,
     regularPrice: 50,
     discountPrice: 0,
@@ -125,18 +127,21 @@ export default function CreateListing() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (formData.imageUrls < 1)
-        return setError("You must upload at least one image");
+      if (formData.imageUrls.length < 1)
+        return setError('You must upload at least one image');
       if (+formData.regularPrice < +formData.discountPrice)
-        return setError("Discout price must be lower than regular price");
+        return setError('Discount price must be lower than regular price');
       setLoading(true);
       setError(false);
-      const res = await fetch("/api/listing/create", {
-        method: "POST",
+      const res = await fetch('/api/listing/create', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ...formData, userRef: currentUser._id }),
+        body: JSON.stringify({
+          ...formData,
+          userRef: currentUser._id,
+        }),
       });
       const data = await res.json();
       setLoading(false);
@@ -198,10 +203,10 @@ export default function CreateListing() {
             type="text"
             placeholder="Whatsapp Number"
             className="border p-3 rounded-lg"
-            id="whatsappNumber"
+            id="whatsappNumbers"
             required
             onChange={handleChange}
-            value={formData.whatsappNumber}
+            value={formData.whatsappNumbers}
           />
           <div className="flex gap-6 flex-wrap">
             <div className="flex gap-2">
