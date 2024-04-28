@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRef } from "react";
 
@@ -30,6 +30,9 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [showListingsError, setShowListingsError] = useState(false);
+  const [userRequests, setUserRequests] = useState([]);
+  const [loadingRequests, setLoadingRequests] = useState(false);
+  const [errorRequests, setErrorRequests] = useState(null);
   const dispatch = useDispatch();
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [userListings, setUserListings] = useState([]);
@@ -38,6 +41,11 @@ export default function Profile() {
       handelFileUpload(file);
     }
   }, [file]);
+  useEffect(() => {
+    if (currentUser) {
+      fetchUserRequests();
+    }
+  }, [currentUser]);
 
   const handelFileUpload = (file) => {
     const storage = getStorage(app);
@@ -60,6 +68,21 @@ export default function Profile() {
         });
       }
     );
+  };
+  const fetchUserRequests = async () => {
+    setLoadingRequests(true);
+    try {
+      const res = await fetch(`/api/user/requests/${currentUser._id}`);
+      const data = await res.json();
+      if (data.success === false) {
+        throw new Error(data.message);
+      }
+      setUserRequests(data);
+    } catch (error) {
+      setErrorRequests(error.message);
+    } finally {
+      setLoadingRequests(false);
+    }
   };
   const handelChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -150,6 +173,21 @@ export default function Profile() {
     }catch(error){
     }
   }
+  const handleRequestDelete = async (requestId) => {
+    try {
+      const res = await fetch(`/api/request/delete/${requestId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
+      setUserRequests((prev) =>
+        prev.filter((request) => request._id !== requestId)
+      );
+    } catch (error) {}
+  };
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-bold text-center my-7">Profile</h1>
@@ -215,6 +253,12 @@ export default function Profile() {
         >
           Create Listing
         </Link>
+        <Link
+          to={"/create-request"}
+          className="bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95"
+        >
+          Create request
+        </Link>
       </form>
       <div className="flex justify-between mt-5">
         <span
@@ -231,6 +275,42 @@ export default function Profile() {
       <p className="text-green-700 mt-5 text-center">
         {updateSuccess ? "User Updated Successfully" : ""}
       </p>
+    
+      <div>
+        <h2 className="text-2xl font-semibold mb-3">Your Requests</h2>
+        {loadingRequests && <p>Loading requests...</p>}
+        {errorRequests && <p className="text-red-500">{errorRequests}</p>}
+        {userRequests.map((request) => (
+          <div key={request._id} className="border rounded-lg p-4 mb-4 shadow-md">
+            <h3 className="text-lg font-semibold mb-2">{request.name}</h3>
+            <p className="text-gray-600 mb-2">City: {request.city}</p>
+            <p className="text-gray-600 mb-2">Max Price: ${request.maxPrice}</p>
+            <p className="text-gray-600 mb-2">Area: {request.Area} m²</p>
+            <p className="text-gray-600 mb-2">
+              Additional Details:{" "}
+              {request.furnished ? "Furnished" : "Unfurnished"},{" "}
+              {request.parking ? "Parking available" : "No Parking"}
+            </p>
+            <div className="flex justify-between items-center">
+            <Link
+              to={`/request/${request._id}`}
+              className="text-blue-600 hover:text-blue-700 rounded-md p-2 bg-blue-100 shadow-md hover:shadow-lg focus:outline-none focus:ring focus:ring-blue-200"
+            >
+              View Request
+            </Link>
+            <button
+              onClick={() => handleRequestDelete(request._id)}
+              className="text-red-600 hover:text-red-700 rounded-md p-2 bg-red-100 shadow-md hover:shadow-lg focus:outline-none focus:ring focus:ring-red-200"
+            >
+              Delete Request
+            </button>
+            </div>
+          </div>
+        ))}
+        {userRequests.length === 0 && !loadingRequests && (
+          <p>No requests found.</p>
+        )}
+      </div>
       <button onClick={handelShowListings} className="text-green-700 w-full">
         Show Listings
       </button>

@@ -13,16 +13,25 @@ export default function CreateListing() {
   const { currentUser } = useSelector((state) => state.user);
   const [files, setFiles] = useState([]);
   const navigate = useNavigate();
+  const cities = [
+    "Cairo", "Alexandria", "Giza", "Shubra El-Kheima", "Port Said",
+    "Suez", "El Mahalla El Kubra", "Luxor", "Mansoura", "Tanta",
+    "Asyut", "Ismailia", "Fayyum", "Zagazig", "Damietta", "Aswan",
+    "Minya", "Damanhur", "Beni Suef", "Hurghada", "Qena", "Sohag",
+    "Shibin El Kom", "Banha", "Arish", "10th of Ramadan City"
+  ];
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
     description: "",
+    city:"Cairo",
     address: "",
     type: "rent",
     bedrooms: 1,
     phoneNumber:"",
     whatsappNumbers:"",
     bathrooms: 1,
+    area: null,
     regularPrice: 50,
     discountPrice: 0,
     offer: false,
@@ -116,7 +125,7 @@ export default function CreateListing() {
     if (
       e.target.type === "number" ||
       e.target.type === "text" ||
-      e.target.type === "textarea"
+      e.target.type === "textarea"  || e.target.type === "select-one"
     ) {
       setFormData({
         ...formData,
@@ -181,6 +190,19 @@ export default function CreateListing() {
             onChange={handleChange}
             value={formData.description}
           />
+           <div className="border p-3 rounded-lg">
+            <select
+              id="city"
+              required
+              onChange={handleChange}
+              value={formData.city}
+              className="block w-full p-2.5 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              >
+              {cities.map((city, index) => (
+                <option key={index} value={city}>{city}</option>
+              ))}
+            </select>
+          </div>
           <input
             type="text"
             placeholder="Address"
@@ -189,6 +211,15 @@ export default function CreateListing() {
             required
             onChange={handleChange}
             value={formData.address}
+          />
+          <input
+            type="text"
+            placeholder="area m²"
+            className="border p-3 rounded-lg"
+            id="area"
+            required
+            onChange={handleChange}
+            value={formData.area}
           />
           <input
             type="text"

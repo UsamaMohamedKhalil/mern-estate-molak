@@ -1,5 +1,7 @@
 import User from "../models/User.model.js";
 import Listing from "../models/Listing.model.js";
+import Request from '../models/Request.model.js'; 
+
 import { errorHandeler } from "../utils/error.js";
 import bcryptjs from 'bcryptjs';
 export const test = (req,res) => {
@@ -61,6 +63,18 @@ export const deleteUser = async (req, res, next) => {
      return next(errorHandeler(401, 'You can only view your own listings!'));
    }
  };
+ export const getUserRequests = async (req, res, next) => {
+  if (req.user.id === req.params.id) {
+    try {
+      const requests = await Request.find({ userRef: req.params.id });
+      res.status(200).json(requests);
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    return next(errorHandeler(401, 'You can only view your own requests!'));
+  }
+}
  export const getUser = async (req, res, next) => {
   try {
 

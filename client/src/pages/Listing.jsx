@@ -14,6 +14,9 @@ import {
     FaParking,
     FaShare,
   } from 'react-icons/fa';
+  import { FaMapLocationDot } from "react-icons/fa6";
+  import { TbRulerMeasure } from "react-icons/tb";
+
   import { IoLogoWhatsapp } from "react-icons/io";
   import { FaPhoneVolume } from "react-icons/fa6";
 import Contact from '../components/Contact';
@@ -95,9 +98,20 @@ export default function Listing() {
               {listing.type === 'rent' && ' / month'}
             </p>
             <p className='flex items-center mt-6 gap-2 text-slate-600  text-sm'>
+              <TbRulerMeasure className='text-green-700' />
+              {listing.area} m²
+            </p>
+            
+
+            <p className='flex items-center mt-6 gap-2 text-slate-600  text-sm'>
+              <FaMapLocationDot className='text-green-700' />
+              {listing.city}
+            </p>
+            <p className='flex items-center mt-6 gap-2 text-slate-600  text-sm'>
               <FaMapMarkerAlt className='text-green-700' />
               {listing.address}
             </p>
+         
             <Link to={`https://api.whatsapp.com/send?phone=${listing.whatsappNumbers}`}>
                 <p className='flex items-center mt-6 gap-2 text-slate-600  text-sm'>
                 <IoLogoWhatsapp className='text-green-700' />

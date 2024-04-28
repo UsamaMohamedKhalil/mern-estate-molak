@@ -5,6 +5,8 @@ import userRouter from "./routes/user.route.js";
 import authRouter from "./routes/auth.route.js";
 import cookieParser from "cookie-parser";
 import listingRouter from './routes/listing.route.js';
+import requestRouter from './routes/request.route.js';
+
 dotenv.config();
 mongoose.connect(process.env.MONGO).then(()=>{
    console.log('connect to mongo db');
@@ -21,7 +23,7 @@ app.listen(3000, ()=>{
 app.use("/api/user",userRouter);
 app.use("/api/auth" , authRouter);
 app.use("/api/listing" , listingRouter);
-
+app.use("/api/request" , requestRouter );
 //Middleware
 app.use((err,erq,res,next)=> {
 const statusCode = err.statusCode || 500;
