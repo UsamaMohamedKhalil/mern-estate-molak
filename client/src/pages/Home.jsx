@@ -10,9 +10,21 @@ export default function Home() {
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
+
   SwiperCore.use([Navigation]);
-  console.log(offerListings);
+
   useEffect(() => {
+    const fetchRecommendations = async () => {
+      try {
+        const res = await fetch('/api/request/getRecommendations'); // Adjust endpoint as per your backend
+        const data = await res.json();
+        setRecommendations(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     const fetchOfferListings = async () => {
       try {
         const res = await fetch('/api/listing/get?offer=true&limit=4');
@@ -23,6 +35,7 @@ export default function Home() {
         console.log(error);
       }
     };
+
     const fetchRentListings = async () => {
       try {
         const res = await fetch('/api/listing/get?type=rent&limit=4');
@@ -40,17 +53,20 @@ export default function Home() {
         const data = await res.json();
         setSaleListings(data);
       } catch (error) {
-        log(error);
+        console.log(error);
       }
     };
+
+    fetchRecommendations();
     fetchOfferListings();
-  }, []);
+  }, [offerListings,saleListings,rentListings]);
+
   return (
     <div>
-      {/* top */}
+      {/* Top section */}
       <div className='flex flex-col gap-6 p-28 px-3 max-w-6xl mx-auto'>
         <h1 className='text-slate-700 font-bold text-3xl lg:text-6xl'>
-        Disrupting Real Estate <span className='text-slate-500'>A Peer-to-Peer</span>
+          Disrupting Real Estate <span className='text-slate-500'>A Peer-to-Peer</span>
           <br />
           Revolution
         </h1>
@@ -68,12 +84,12 @@ export default function Home() {
         </Link>
       </div>
 
-      {/* swiper */}
-      <Swiper navigation>
+      {/* Swiper carousel */}
+       <Swiper navigation>
         {offerListings &&
           offerListings.length > 0 &&
           offerListings.map((listing) => (
-            <SwiperSlide>
+            <SwiperSlide key={listing._id}>
               <div
                 style={{
                   background: `url(${listing.imageUrls[0]}) center no-repeat`,
@@ -86,11 +102,28 @@ export default function Home() {
           ))}
       </Swiper>
 
-      {/* listing results for offer, sale and rent */}
-
+      {/* Listing results for offer, sale, and rent */}
+      <div className='max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10'>
+        {/* Display recommendations */}
+        {recommendations && recommendations.length > 0 && (
+          <div>
+            <div className='my-3'>
+              <h2 className='text-2xl font-semibold text-slate-600'>Recommended Listings</h2>
+              <Link className='text-sm text-blue-800 hover:underline' to={'/search?recommendations=true'}>Show more recommendations</Link>
+            </div>
+            <div className='flex flex-wrap gap-4'>
+              {recommendations.map((listing) => (
+                <ListingItem listing={listing.listings[0]} key={listing._id} />
+              ))}
+            </div>
+          </div>
+        )}
+        {/* Other listing categories */}
+        {/* Include the code for offer, rent, and sale listings here */}
+      </div>
       <div className='max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10'>
         {offerListings && offerListings.length > 0 && (
-          <div className=''>
+          <div>
             <div className='my-3'>
               <h2 className='text-2xl font-semibold text-slate-600'>Recent offers</h2>
               <Link className='text-sm text-blue-800 hover:underline' to={'/search?offer=true'}>Show more offers</Link>
@@ -103,7 +136,7 @@ export default function Home() {
           </div>
         )}
         {rentListings && rentListings.length > 0 && (
-          <div className=''>
+          <div>
             <div className='my-3'>
               <h2 className='text-2xl font-semibold text-slate-600'>Recent places for rent</h2>
               <Link className='text-sm text-blue-800 hover:underline' to={'/search?type=rent'}>Show more places for rent</Link>
@@ -116,7 +149,7 @@ export default function Home() {
           </div>
         )}
         {saleListings && saleListings.length > 0 && (
-          <div className=''>
+          <div>
             <div className='my-3'>
               <h2 className='text-2xl font-semibold text-slate-600'>Recent places for sale</h2>
               <Link className='text-sm text-blue-800 hover:underline' to={'/search?type=sale'}>Show more places for sale</Link>
@@ -128,6 +161,7 @@ export default function Home() {
             </div>
           </div>
         )}
+        
       </div>
     </div>
   );

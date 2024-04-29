@@ -12,12 +12,20 @@ export default function Search() {
     offer: false,
     sort: 'created_at',
     order: 'desc',
+    city: '',
   });
 
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
-  
-  const [showMore , setShowMore ] = useState(false);
+  const [showMore, setShowMore] = useState(false);
+
+  const cities = [
+    "Cairo", "Alexandria", "Giza", "Shubra El-Kheima", "Port Said",
+    "Suez", "El Mahalla El Kubra", "Luxor", "Mansoura", "Tanta",
+    "Asyut", "Ismailia", "Fayyum", "Zagazig", "Damietta", "Aswan",
+    "Minya", "Damanhur", "Beni Suef", "Hurghada", "Qena", "Sohag",
+    "Shibin El Kom", "Banha", "Arish", "10th of Ramadan City"
+  ];
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -28,6 +36,7 @@ export default function Search() {
     const offerFromUrl = urlParams.get('offer');
     const sortFromUrl = urlParams.get('sort');
     const orderFromUrl = urlParams.get('order');
+    const cityFromUrl = urlParams.get('city');
 
     if (
       searchTermFromUrl ||
@@ -36,7 +45,8 @@ export default function Search() {
       furnishedFromUrl ||
       offerFromUrl ||
       sortFromUrl ||
-      orderFromUrl
+      orderFromUrl ||
+      cityFromUrl
     ) {
       setSidebardata({
         searchTerm: searchTermFromUrl || '',
@@ -46,6 +56,7 @@ export default function Search() {
         offer: offerFromUrl === 'true' ? true : false,
         sort: sortFromUrl || 'created_at',
         order: orderFromUrl || 'desc',
+        city: cityFromUrl || '',
       });
     }
 
@@ -54,7 +65,7 @@ export default function Search() {
       const searchQuery = urlParams.toString();
       const res = await fetch(`/api/listing/get?${searchQuery}`);
       const data = await res.json();
-      if(data.length > 8) {
+      if (data.length > 8) {
         setShowMore(true);
       }
       setListings(data);
@@ -91,10 +102,12 @@ export default function Search() {
 
     if (e.target.id === 'sort_order') {
       const sort = e.target.value.split('_')[0] || 'created_at';
-
       const order = e.target.value.split('_')[1] || 'desc';
-
       setSidebardata({ ...sidebardata, sort, order });
+    }
+
+    if (e.target.id === 'city') {
+      setSidebardata({ ...sidebardata, city: e.target.value });
     }
   };
 
@@ -108,6 +121,7 @@ export default function Search() {
     urlParams.set('offer', sidebardata.offer);
     urlParams.set('sort', sidebardata.sort);
     urlParams.set('order', sidebardata.order);
+    urlParams.set('city', sidebardata.city);
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
   };
@@ -125,6 +139,7 @@ export default function Search() {
     }
     setListings([...listings, ...data]);
   };
+
   return (
     <div className='flex flex-col md:flex-row'>
       <div className='p-7  border-b-2 md:border-r-2 md:min-h-screen'>
@@ -149,12 +164,12 @@ export default function Search() {
             </div>
             <div className='flex gap-2'>
               <input type='checkbox' id='rent' className='w-5' onChange={handleChange}
-                checked={sidebardata.type === 'rent'}/>
+                checked={sidebardata.type === 'rent'} />
               <span>Rent</span>
             </div>
             <div className='flex gap-2'>
               <input type='checkbox' id='sale' className='w-5' onChange={handleChange}
-                checked={sidebardata.type === 'sale'}/>
+                checked={sidebardata.type === 'sale'} />
               <span>Sale</span>
             </div>
             <div className='flex gap-2'>
@@ -166,12 +181,12 @@ export default function Search() {
           <div className='flex gap-2 flex-wrap items-center'>
             <label className='font-semibold'>Amenities:</label>
             <div className='flex gap-2'>
-              <input type='checkbox' id='parking' className='w-5'  onChange={handleChange}
+              <input type='checkbox' id='parking' className='w-5' onChange={handleChange}
                 checked={sidebardata.parking} />
               <span>Parking</span>
             </div>
             <div className='flex gap-2'>
-              <input type='checkbox' id='furnished' className='w-5'  onChange={handleChange}
+              <input type='checkbox' id='furnished' className='w-5' onChange={handleChange}
                 checked={sidebardata.furnished} />
               <span>Furnished</span>
             </div>
@@ -188,6 +203,20 @@ export default function Search() {
               <option value='regularPrice_asc'>Price low to hight</option>
               <option value='createdAt_desc'>Latest</option>
               <option value='createdAt_asc'>Oldest</option>
+            </select>
+          </div>
+          <div className='flex items-center gap-2'>
+            <label className='font-semibold'>City:</label>
+            <select
+              onChange={handleChange}
+              value={sidebardata.city}
+              id='city'
+              className='border rounded-lg p-3'
+            >
+              <option value=''>All Cities</option>
+              {cities.map((city) => (
+                <option key={city} value={city}>{city}</option>
+              ))}
             </select>
           </div>
           <button className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95'>
@@ -214,11 +243,11 @@ export default function Search() {
             listings.map((listing) => (
               <ListingItem key={listing._id} listing={listing} />
             ))}
-            {showMore && (
-                <button onClick={onShowMoreClick} className='text-green-700 hover:underline p-7 text-center w-full'>
-                    show more
-                </button>
-            )}
+          {showMore && (
+            <button onClick={onShowMoreClick} className='text-green-700 hover:underline p-7 text-center w-full'>
+              show more
+            </button>
+          )}
         </div>
       </div>
     </div>

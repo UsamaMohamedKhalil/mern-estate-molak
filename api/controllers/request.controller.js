@@ -1,6 +1,7 @@
 
 import Request from "../models/Request.model.js";
 import { errorHandeler } from "../utils/error.js";
+import Listing from "../models/Listing.model.js";
 
 export const createRequest = async (req, res, next) => {
     try {
@@ -61,6 +62,41 @@ export const getRequests = async (req, res, next) => {
     try {
         const requests = await Request.find({});
         res.status(200).json(requests);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getRecommendations = async (req, res, next) => {
+    try {
+        // Retrieve user's requests
+        const userRequests = await Request.find({ userRef: req.user.id });
+
+        // Initialize an array to store recommendations for each request
+        const recommendations = [];
+
+        // Iterate over each user request
+        for (const request of userRequests) {
+            // Determine criteria based on the user's request
+            const criteria = {
+                city: request.city,              
+                furnished: request.furnished,
+                parking: request.parking,
+                type: request.type
+            };
+
+            // Find listings that match the request criteria
+            const listings = await Listing.find(criteria);
+
+            // Add the matched listings to recommendations array
+            recommendations.push({
+                request: request,
+                listings: listings
+            });
+        }
+
+        // Return recommendations for each request
+        res.status(200).json(recommendations);
     } catch (error) {
         next(error);
     }

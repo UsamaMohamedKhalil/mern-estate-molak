@@ -96,12 +96,21 @@ export const updateListing = async (req, res, next) => {
   
       const order = req.query.order || 'desc';
   
+      let city = req.query.city; // Add city parameter
+  
+      if (!city) {
+        city = { $regex: '.*', $options: 'i' }; // If no city provided, match any city
+      } else {
+        city = { $regex: city, $options: 'i' }; // Match the provided city
+      }
+  
       const listings = await Listing.find({
         name: { $regex: searchTerm, $options: 'i' },
         offer,
         furnished,
         parking,
         type,
+        city, // Include city filter in the query
       })
         .sort({ [sort]: order })
         .limit(limit)
