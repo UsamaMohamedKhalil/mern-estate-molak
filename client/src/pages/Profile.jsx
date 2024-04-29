@@ -284,7 +284,7 @@ export default function Profile() {
           <div key={request._id} className="border rounded-lg p-4 mb-4 shadow-md">
             <h3 className="text-lg font-semibold mb-2">{request.name}</h3>
             <p className="text-gray-600 mb-2">City: {request.city}</p>
-            <p className="text-gray-600 mb-2">Max Price: ${request.maxPrice}</p>
+            <p className="text-gray-600 mb-2">Max Price: {request.maxPrice} Egp</p>
             <p className="text-gray-600 mb-2">Area: {request.Area} m²</p>
             <p className="text-gray-600 mb-2">
               Additional Details:{" "}

@@ -60,7 +60,7 @@ export default function Request() {
                         </p>
                     )}
                     <div className="max-w-4xl mx-auto p-3 my-7 gap-4 bg-white shadow-md rounded-md">
-                        <p className="text-2xl font-semibold">{request.name} - Max ${request.maxPrice.toLocaleString('en-US')}</p>
+                        <p className="text-2xl font-semibold">{request.name} - Max {request.maxPrice.toLocaleString('en-US')} Egp</p>
                         <p className="flex items-center mt-3 text-gray-600 text-sm">
                             <TbRulerMeasure className="text-green-700 mr-1" />
                             {request.Area} m²

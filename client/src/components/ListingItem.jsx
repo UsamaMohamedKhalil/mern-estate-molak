@@ -1,9 +1,18 @@
 import { Link } from 'react-router-dom';
 import { MdLocationOn } from 'react-icons/md';
+import { FaBath, FaBed } from 'react-icons/fa';
 
 export default function ListingItem({ listing }) {
+  if (!listing || !listing._id) {
+    // Handle case where listing is undefined or _id is not defined
+    return null;
+  }
+
+  const listingTypeLabel =
+    listing.type === 'rent' ? 'For Rent' : 'For Sale';
+
   return (
-    <div className='bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[330px]'>
+    <div className='bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[330px] relative'>
       <Link to={`/listing/${listing._id}`}>
         <img
           src={
@@ -13,6 +22,8 @@ export default function ListingItem({ listing }) {
           alt='listing cover'
           className='h-[320px] sm:h-[220px] w-full object-cover hover:scale-105 transition-scale duration-300'
         />
+        <div className="absolute top-0 left-0 bg-gray-800 text-white px-2 py-1">{listingTypeLabel}</div>
+        
         <div className='p-3 flex flex-col gap-2 w-full'>
           <p className='truncate text-lg font-semibold text-slate-700'>
             {listing.name}
@@ -26,19 +37,20 @@ export default function ListingItem({ listing }) {
           <p className='text-sm text-gray-600 line-clamp-2'>
             {listing.description}
           </p>
-          <p className='text-slate-500 mt-2 font-semibold '>
-             
+          <p className='text-slate-500 mt-2 font-semibold'>
             {listing.offer
               ? listing.discountPrice.toLocaleString('en-US')
-              : listing.regularPrice.toLocaleString('en-US')}
-            {' '} EGP {listing.type === 'rent' && ' / month'} 
+              : listing.regularPrice.toLocaleString('en-US')}{' '}
+            EGP {listing.type === 'rent' ? '/ month' : ''}
           </p>
           <div className='text-slate-700 flex gap-4'>
+            <FaBed className='text-sm' />
             <div className='font-bold text-xs'>
               {listing.bedrooms > 1
                 ? `${listing.bedrooms} beds `
                 : `${listing.bedrooms} bed `}
             </div>
+            <FaBath className='text-sm' />
             <div className='font-bold text-xs'>
               {listing.bathrooms > 1
                 ? `${listing.bathrooms} baths `

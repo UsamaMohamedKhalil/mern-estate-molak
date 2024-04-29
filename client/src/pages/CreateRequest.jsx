@@ -8,9 +8,9 @@ export default function CreateRequest() {
   const [formData, setFormData] = useState({
     name: "",
     city: "Cairo",
-    maxPrice: 0,
-    mintPrice: 0,
-    Area: 0,
+    maxPrice: null,
+    mintPrice: null,
+    Area: null,
     furnished: false,
     parking: false,
     type: "rent",
