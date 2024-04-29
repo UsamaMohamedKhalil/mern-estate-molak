@@ -59,7 +59,7 @@ export default function Home() {
 
     fetchRecommendations();
     fetchOfferListings();
-  }, [offerListings,saleListings,rentListings]);
+  }, []);
 
   return (
     <div>

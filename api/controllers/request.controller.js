@@ -82,7 +82,7 @@ export const getRecommendations = async (req, res, next) => {
                 city: request.city,              
                 furnished: request.furnished,
                 parking: request.parking,
-                type: request.type
+                type: request.type,
             };
 
             // Find listings that match the request criteria
@@ -96,8 +96,13 @@ export const getRecommendations = async (req, res, next) => {
         }
 
         // Return recommendations for each request
-        res.status(200).json(recommendations);
+        if (recommendations.length === 0) {
+            res.status(404).json({ message: "No recommendations found" });
+        } else {
+            res.status(200).json(recommendations);
+        }
     } catch (error) {
         next(error);
     }
 };
+

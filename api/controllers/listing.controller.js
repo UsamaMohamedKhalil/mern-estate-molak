@@ -121,3 +121,15 @@ export const updateListing = async (req, res, next) => {
       next(error);
     }
   };
+  export const getListingsByCity = async (req, res, next) => {
+    try {
+      const { city } = req.params; // Get city from URL parameter
+      const listings = await Listing.find({
+        city: { $regex: city, $options: 'i' }, // Case-insensitive matching for city
+      }).sort({ createdAt: -1 }); // Sorting by creation date for freshest listings first
+  
+      res.status(200).json(listings);
+    } catch (error) {
+      next(errorHandler(500, 'Server error while fetching listings'));
+    }
+  };
