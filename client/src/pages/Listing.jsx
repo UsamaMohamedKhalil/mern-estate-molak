@@ -38,11 +38,13 @@ export default function Listing() {
                   `/api/listing/by-city/${listing.city}`
               ); // Adjust endpoint as per your backend
               const data = await res.json();
+              console.log(data)
               const filteredRecommendations = data.filter(
-                (recommendation) => recommendation.userRef !== listing.userRef
+                (recommendation) => recommendation._id !== params.listingId
             );
             setRecommendations(filteredRecommendations);
-          
+            console.log(recommendations)
+
       } catch (error) {
           console.log(error);
       }
@@ -132,7 +134,7 @@ export default function Listing() {
                                 : listing.regularPrice.toLocaleString(
                                       'en-US'
                                   )}{' '}
-                            Egp {listing.type === 'rent' && ' / month'}
+                             {listing.type === 'rent' && ' / month'}
                         </p>
                         <p className='flex items-center mt-6 gap-2 text-slate-600  text-sm'>
                             <TbRulerMeasure className='text-green-700' />
@@ -168,9 +170,10 @@ export default function Listing() {
                             </p>
                             {listing.offer && (
                                 <p className='bg-green-900 w-full max-w-[200px] text-white text-center p-1 rounded-md'>
-                                    $
+                                    
                                     {+listing.regularPrice -
                                         +listing.discountPrice}{' '}
+                                        Egp
                                     OFF
                                 </p>
                             )}

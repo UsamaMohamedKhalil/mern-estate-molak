@@ -7,18 +7,26 @@ import {
 } from "firebase/storage";
 import { app } from "../firebase";
 import { useSelector } from "react-redux";
-import { useNavigate , useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function UpdateListingPage() {
   const params = useParams();
   const { currentUser } = useSelector((state) => state.user);
   const [files, setFiles] = useState([]);
   const navigate = useNavigate();
+  const cities = [
+    "Cairo", "Alexandria", "Giza", "Shubra El-Kheima", "Port Said",
+    "Suez", "El Mahalla El Kubra", "Luxor", "Mansoura", "Tanta",
+    "Asyut", "Ismailia", "Fayyum", "Zagazig", "Damietta", "Aswan",
+    "Minya", "Damanhur", "Beni Suef", "Hurghada", "Qena", "Sohag",
+    "Shibin El Kom", "Banha", "Arish", "10th of Ramadan City"
+  ];
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
     description: "",
     address: "",
+    city: "Cairo",
     type: "rent",
     bedrooms: 1,
     phoneNumber:"",
@@ -35,21 +43,20 @@ export default function UpdateListingPage() {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     const fetchListing = async () => {
-        const listingId = params.listingId;
-        const res = await fetch(`/api/listing/get/${listingId}`);
-        const data = await res.json();
-        if(data.success===false){
-          console.log(data.message);
-          return;
-        }
-        setFormData(data);
-    }
+      const listingId = params.listingId;
+      const res = await fetch(`/api/listing/get/${listingId}`);
+      const data = await res.json();
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
+      setFormData(data);
+    };
     fetchListing();
-  },[]);
+  }, []);
 
-  
   const handleImageSubmit = (e) => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
       setUploading(true);
@@ -139,7 +146,14 @@ export default function UpdateListingPage() {
         [e.target.id]: e.target.value,
       });
     }
+    if (e.target.id === "city") {
+      setFormData({
+        ...formData,
+        city: e.target.value,
+      });
+    }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -206,6 +220,18 @@ export default function UpdateListingPage() {
             onChange={handleChange}
             value={formData.address}
           />
+          <select
+            className="border p-3 rounded-lg"
+            id="city"
+            value={formData.city}
+            onChange={handleChange}
+          >
+            {cities.map((city) => (
+              <option key={city} value={city}>
+                {city}
+              </option>
+            ))}
+          </select>
           <input
             type="text"
             placeholder="Phone Number"
