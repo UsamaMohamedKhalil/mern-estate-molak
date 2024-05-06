@@ -3,11 +3,16 @@ import { google, signOut, signin, signup } from '../controllers/auth.controller.
 
 const router = express.Router();
 
+// Route to handle user signup
 router.post("/signup", signup);
 
-router.post("/signin",signin);
+// Route to handle user signin
+router.post("/signin", signin);
 
-router.post("/google",google);
+// Route to handle Google authentication
+router.post("/google", google);
 
-router.get('/signout',signOut);
+// Route to handle user signout
+router.get('/signout', signOut);
+
 export default router;

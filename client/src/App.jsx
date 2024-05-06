@@ -13,7 +13,6 @@ import Listing from "./pages/Listing";
 import Search from "./pages/Search";
 import CreateRequest from "./pages/CreateRequest";
 import Request from "./pages/Request";
-import Requests from "./pages/Requests";
 
 export default function App() {
   return (
@@ -32,7 +31,6 @@ export default function App() {
         <Route path="/update-listing/:listingId" element={<UpdateListingPage />} />
         <Route path="/listing/:listingId" element={<Listing />} />
         <Route path="/request/:requestId" element={<Request />} />
-        <Route path="/requests/:requestId" element={<Requests />} />
 
         </Route>
       </Routes>

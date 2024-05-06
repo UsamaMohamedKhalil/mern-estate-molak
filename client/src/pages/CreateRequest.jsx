@@ -9,8 +9,8 @@ export default function CreateRequest() {
     name: "",
     city: "Cairo",
     maxPrice: null,
-    mintPrice: null,
-    Area: null,
+    minPrice: null,
+    area: null,
     furnished: false,
     parking: false,
     type: "rent",
@@ -95,19 +95,19 @@ export default function CreateRequest() {
         <input
           type="number"
           placeholder="Minimum Price"
-          id="mintPrice"
+          id="minPrice"
           required
           onChange={handleChange}
-          value={formData.mintPrice}
+          value={formData.minPrice}
           className="border p-3 rounded-lg"
         />
         <input
           type="number"
           placeholder="Area (m²)"
-          id="Area"
+          id="area"
           required
           onChange={handleChange}
-          value={formData.Area}
+          value={formData.area}
           className="border p-3 rounded-lg"
         />
         <div className="flex gap-2">

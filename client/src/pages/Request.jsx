@@ -5,15 +5,22 @@ import { FaMapMarkerAlt, FaShare } from 'react-icons/fa';
 import { TbRulerMeasure } from "react-icons/tb";
 import Contact from '../components/Contact';
 
+// Request component function
 export default function Request() {
+    // Redux state
     const { currentUser } = useSelector((state) => state.user);
+    
+    // Parameters from URL
     const params = useParams();
+    
+    // State variables
     const [contact, setContact] = useState(false);
     const [request, setRequest] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [copied, setCopied] = useState(false);
 
+    // Fetch request data
     useEffect(() => {
         const fetchRequest = async () => {
             try {
@@ -36,6 +43,7 @@ export default function Request() {
         fetchRequest();
     }, [params.requestId]);
 
+    // Render JSX
     return (
         <main className="container mx-auto px-4 py-8">
             {loading && <p className="text-center my-7 text-lg">Loading...</p>}
@@ -63,9 +71,8 @@ export default function Request() {
                         <p className="text-2xl font-semibold">{request.name} - Max {request.maxPrice.toLocaleString('en-US')} Egp</p>
                         <p className="flex items-center mt-3 text-gray-600 text-sm">
                             <TbRulerMeasure className="text-green-700 mr-1" />
-                            {request.Area} m²
+                            {request.area} m²
                         </p>
-
                         <p className="flex items-center mt-3 text-gray-600 text-sm">
                             <FaMapMarkerAlt className="text-green-700 mr-1" />
                             {request.city}

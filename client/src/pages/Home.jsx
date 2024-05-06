@@ -1,29 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
-import SwiperCore from 'swiper';
-import 'swiper/css/bundle';
+import { Swiper, SwiperSlide } from 'swiper/react'; // Import Swiper components
+import { Navigation } from 'swiper/modules'; // Import Swiper navigation module
+import SwiperCore from 'swiper'; // Import Swiper core
+import 'swiper/css/bundle'; // Import Swiper styles
 import ListingItem from '../components/ListingItem';
 
 export default function Home() {
+  // State variables to store listings and recommendations
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
 
+  // Initialize Swiper core with navigation
   SwiperCore.use([Navigation]);
 
+  // Fetch data on component mount
   useEffect(() => {
+    // Fetch recommendations
     const fetchRecommendations = async () => {
       try {
         const res = await fetch('/api/request/getRecommendations');
         const data = await res.json();
         if (res.ok) {
+          // Set recommendations if fetch is successful
           const listings = data.flatMap((recommendation) => recommendation);
-          
           setRecommendations(listings);
-          console.log(recommendations);
         } else {
           console.log(data.message);
         }
@@ -32,6 +35,7 @@ export default function Home() {
       }
     };
 
+    // Fetch offer listings
     const fetchOfferListings = async () => {
       try {
         const res = await fetch('/api/listing/get?offer=true&limit=4');
@@ -43,6 +47,7 @@ export default function Home() {
       }
     };
 
+    // Fetch rent listings
     const fetchRentListings = async () => {
       try {
         const res = await fetch('/api/listing/get?type=rent&limit=4');
@@ -54,6 +59,7 @@ export default function Home() {
       }
     };
 
+    // Fetch sale listings
     const fetchSaleListings = async () => {
       try {
         const res = await fetch('/api/listing/get?type=sale&limit=4');
@@ -97,6 +103,7 @@ export default function Home() {
           offerListings.length > 0 &&
           offerListings.map((listing) => (
             <SwiperSlide key={listing._id}>
+              {/* Display carousel slide with listing image */}
               <div
                 style={{
                   background: `url(${listing.imageUrls[0]}) center no-repeat`,
@@ -112,13 +119,10 @@ export default function Home() {
       {/* Listing results for offer, sale, and rent */}
       <div className='max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10'>
         {/* Display recommendations */}
-        {console.log(recommendations)}
         {recommendations.length > 0 && (
           <div>
             <div className='my-3'>
-              
               <h2 className='text-2xl font-semibold text-slate-600'>Recommended Listings</h2>
-              
               <Link className='text-sm text-blue-800 hover:underline' to={'/search?recommendations=true'}>Show more recommendations</Link>
             </div>
             <div className='flex flex-wrap gap-4'>
